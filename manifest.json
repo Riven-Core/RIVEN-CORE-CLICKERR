@@ -1,0 +1,21 @@
+{
+  "name": "Riven • Clicker",
+  "short_name": "Riven Clicker",
+  "description": "⚡ El mejor juego clicker — Energía, mundos, renacimientos y logros",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#2a0e52",
+  "theme_color": "#7b2cbf",
+  "orientation": "portrait",
+  "scope": "./",
+  "lang": "es-ES",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
+

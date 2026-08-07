@@ -1,0 +1,224 @@
+<!DOCTYPE html><html lang="es"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>⚡ Riven Clicker</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7b2cbf">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script>let deferredPrompt;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;});</script>
+<style>
+:root{--fondo:#2a0e52;--m-tarjeta:#3d1a70;--m-borde:#7b2cbf;--m-claro:#c77dff;--azul:#00d9ff;--oro:#ffd300;--verde:#38b000;--blanco:#fff;--gris:#b8a2d9;--rojo:#ff4d6d}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:var(--fondo);min-height:100vh;color:var(--blanco);padding:12px;max-width:480px;margin:0 auto}
+.btn-instalar{background:0 0;color:var(--m-claro);border:1px solid rgba(199,125,255,.4);border-radius:8px;padding:6px 12px;font-size:.85rem;cursor:pointer;margin-bottom:8px;transition:.2s;width:100%}
+.btn-instalar:hover{background:rgba(123,44,191,.15)}
+#guia-instalar{display:none;margin-bottom:8px;padding:10px;background:rgba(0,0,0,.5);border-radius:10px;border-left:3px solid var(--m-claro)}
+.guia-tit{color:var(--oro);font-weight:bold;margin:4px 0 2px}
+.guia-texto{color:var(--gris);font-size:.85rem}
+.logro-toast{position:fixed;top:55px;left:50%;transform:translateX(-50%) translateY(-100px);background:linear-gradient(135deg,#ffd300,#ff9800);color:#000;padding:10px 16px;border-radius:12px;font-weight:bold;z-index:9998;opacity:0;transition:.5s;box-shadow:0 0 20px rgba(255,211,0,.5);max-width:300px;text-align:center}
+.logro-toast.mostrar{transform:translateX(-50%) translateY(0);opacity:1}
+.afk-modal{position:fixed;inset:0;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;opacity:0;pointer-events:none;transition:.4s}
+.afk-modal.mostrar{opacity:1;pointer-events:auto}
+.afk-card{background:linear-gradient(145deg,#3d1a70,#250b47);border:3px solid var(--oro);border-radius:20px;padding:22px;max-width:330px;width:100%;text-align:center;box-shadow:0 0 35px rgba(255,211,0,.3);transform:scale(.9);transition:.4s}
+.afk-modal.mostrar .afk-card{transform:scale(1)}
+.afk-tit{font-size:1.3rem;font-weight:bold;color:var(--oro);margin-bottom:15px}
+.afk-dato{font-size:1rem;margin:8px 0}.afk-val{color:var(--verde);font-weight:bold;font-size:1.1rem}
+.afk-btn{background:linear-gradient(135deg,#7b2cbf,#9d4edd);color:#fff;border:none;border-radius:12px;padding:11px 28px;font-size:1rem;font-weight:bold;cursor:pointer;margin-top:10px;transition:.25s;box-shadow:0 0 15px rgba(123,44,191,.4)}
+.afk-btn:hover{transform:scale(1.08)}
+.click-cont{position:relative;display:flex;justify-content:center;margin:12px 0}
+.click-btn{width:190px;height:190px;border-radius:50%;background:linear-gradient(145deg,#4a148c,#311b70);border:4px solid var(--azul);color:#fff;font-size:1.4rem;font-weight:bold;cursor:pointer;box-shadow:0 0 28px rgba(0,217,255,.4);transition:.1s}
+.click-btn:active{transform:scale(.95);box-shadow:0 0 38px rgba(0,217,255,.6)}
+.click-btn span{display:block;font-size:2rem;margin-bottom:2px}
+.flotante{position:absolute;color:var(--oro);font-weight:bold;font-size:1rem;pointer-events:none;animation:subir 1s ease-out forwards;text-shadow:0 0 5px rgba(255,211,0,.8);z-index:2}
+@keyframes subir{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-65px) scale(1.2)}}
+.m-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.m-dios{background:linear-gradient(90deg,#ff4d6d,#ff9800,#ffd300,#38b000,#00d9ff,#7b2cbf,#ff4d6d);background-size:600% 100%;animation:arcoiris 2.5s linear infinite}
+@keyframes arcoiris{0%{background-position:0% 50%}100%{background-position:600% 50%}}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.stat{background:var(--m-tarjeta);border:1px solid var(--m-borde);border-radius:12px;padding:9px 11px}
+.stat-lbl{font-size:.88rem;color:var(--gris)}.stat-val{font-size:1.15rem;font-weight:bold;color:var(--oro);margin-top:2px}
+.info-bar{text-align:center;margin:8px 0;color:var(--m-claro);font-size:.78rem;line-height:1.3}
+.tabs{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0;justify-content:center}
+.tab{background:rgba(61,26,112,.8);color:var(--blanco);border:2px solid transparent;border-radius:10px;padding:7px 9px;font-size:.78rem;cursor:pointer;transition:.2s}
+.tab.active{background:var(--m-borde);border-color:var(--m-claro);box-shadow:0 0 10px rgba(123,44,191,.4)}
+.tab-content{display:none}.tab-content.active{display:block}
+.card{background:var(--m-tarjeta);border:2px solid var(--m-borde);border-radius:14px;padding:12px;margin-top:10px}
+.card-tit{font-size:.98rem;font-weight:bold;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.item{background:rgba(0,0,0,.3);border-radius:10px;padding:9px;margin-bottom:7px;border-left:4px solid;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.item-info{display:flex;align-items:center;gap:9px;flex:1}.item-nom{font-weight:bold;font-size:.85rem}.item-desc{font-size:.74rem;color:var(--gris);margin-top:1px}
+.item-lvl{font-size:.68rem;color:var(--gris);background:rgba(255,255,255,.1);padding:1px 4px;border-radius:4px;margin-left:4px}
+.btn{background:linear-gradient(135deg,#5c16c5,#7b2cbf);color:#fff;border:none;border-radius:8px;padding:6px 9px;font-weight:bold;cursor:pointer;font-size:.76rem;transition:.2s;white-space:nowrap}
+.btn:disabled{opacity:.4;cursor:not-allowed}.locked{opacity:.6}
+.mundo-item.active{border-color:var(--oro);background:rgba(255,211,0,.15);outline:2px solid var(--oro);box-shadow:0 0 8px rgba(255,211,0,.3)}
+.logro-item{display:flex;align-items:center;gap:9px;padding:7px;border-radius:8px;margin-bottom:5px;background:rgba(0,0,0,.2)}
+.logro-item.ok{border:1px solid var(--oro);background:rgba(255,211,0,.1)}.logro-ico{font-size:1rem}.logro-nom{font-weight:bold;font-size:.8rem}.logro-desc{font-size:.7rem;color:var(--gris)}
+</style>
+</head><body>
+<div class="logro-toast" id="lt">🏅 ¡Logro desbloqueado!</div>
+<div id="afkModal" class="afk-modal"><div class="afk-card"><div class="afk-tit">⏰ ¡Bienvenido de vuelta!</div><div class="afk-dato">⏱️ Tiempo AFK: <span class="afk-val" id="afkT">0h 0m 0s</span></div><div class="afk-dato">⚡ Energía ganada: <span class="afk-val" id="afkG">0</span></div><button class="afk-btn" onclick="cerrarAfk()">✅ RECLAMAR</button></div></div>
+<button class="btn-instalar" onclick="toggleGuia()">📖 ¿Cómo instalar?</button>
+<div id="guia-instalar"><p class="guia-tit">📱 Android</p><p class="guia-texto">Chrome → ⋮ → "Instalar aplicación"</p><p class="guia-tit">📱 iPhone</p><p class="guia-texto">Compartir → "Agregar a pantalla de inicio"</p><p class="guia-tit">💻 PC</p><p class="guia-texto">Chrome → ⋮ → "Instalar Riven Clicker"</p></div>
+<div class="click-cont" id="cc"><button class="click-btn" onclick="clickear(event)"><span>⚡</span>CLICK</button></div>
+<div class="stats"><div class="stat"><div class="stat-lbl">⚡ Energía</div><div class="stat-val" id="e">0</div></div><div class="stat"><div class="stat-lbl">⚡ /s</div><div class="stat-val" id="pps">0</div></div><div class="stat"><div class="stat-lbl">👆 Por Clic</div><div class="stat-val" id="pc">1</div></div><div class="stat"><div class="stat-lbl">⭐ Renacimientos</div><div class="stat-val" id="r">0</div></div></div>
+<div class="info-bar">🌍 Mundo: <span id="nm">Base</span> | ×<span id="mul">1.00</span> | 👆 Clics: <span id="tc">0</span></div>
+<div class="tabs">
+<button class="tab active" onclick="cambiar('click')">🖱️ Click</button>
+<button class="tab" onclick="cambiar('mundos')">🌍 Mundos</button>
+<button class="tab" onclick="cambiar('gens')">⚙️ Generadores</button>
+<button class="tab" onclick="cambiar('afk')">⏰ AFK</button>
+<button class="tab" onclick="cambiar('logros')">🏅 Logros</button>
+<button class="tab" onclick="cambiar('renacer')">🔥 Renacer</button>
+</div>
+
+<div id="tab-click" class="tab-content active"><div class="card"><h2 class="card-tit" style="color:#00d9ff;">🖱️ Mejoras de Click</h2>
+<div class="item" style="border-left-color:#888;"><div class="item-info"><div class="m-icon" style="background:linear-gradient(135deg,#888,#555)">🖱️</div><div><div class="item-nom">Mouse Común <span class="item-lvl" id="mc-l">Lv.0</span></div><div class="item-desc">+1/clic</div></div></div><button class="btn" onclick="comprarMC()">⚡<span id="mc-p">22</span></button></div>
+<div class="item" style="border-left-color:#38b000;"><div class="item-info"><div class="m-icon" style="background:linear-gradient(135deg,#38b000,#2d8f00)">🖱️</div><div><div class="item-nom" style="color:#38b000;">Mouse Gamer <span class="item-lvl" id="mg-l">Lv.0</span></div><div class="item-desc">+5/clic • Mina</div></div></div><button class="btn" onclick="comprarMG()">⚡<span id="mg-p">100</span></button></div>
+<div class="item" style="border-left-color:#0099ff;"><div class="item-info"><div class="m-icon" style="background:linear-gradient(135deg,#0099ff,#0066cc)">🖱️</div><div><div class="item-nom" style="color:#0099ff;">Mouse Futurista <span class="item-lvl" id="mf-l">Lv.0</span></div><div class="item-desc">+25/clic • Bosque</div></div></div><button class="btn" onclick="comprarMF()">⚡<span id="mf-p">2.5K</span></button></div>
+<div class="item locked" style="border-left-color:#9c27b0;"><div class="item-info"><div class="m-icon" style="background:linear-gradient(135deg,#9c27b0,#7b1fa2)">🖱️</div><div><div class="item-nom" style="color:#c77dff;">Mouse Mítico 🔒</div><div class="item-desc">+120/clic • Océano</div></div></div><button class="btn" disabled>🔒</button></div>
+<div class="item locked" style="border-left-color:#ff9800;"><div class="item-info"><div class="m-icon" style="background:linear-gradient(135deg,#ff9800,#e68900)">🖱️</div><div><div class="item-nom" style="color:#ffd300;">Mouse Divino 🔒</div><div class="item-desc">+600/clic • Ciudad</div></div></div><button class="btn" disabled>🔒</button></div>
+<div class="item locked" style="border-left-color:#795548;"><div class="item-info"><div class="m-icon" style="background:linear-gradient(135deg,#795548,#5d4037)">🖱️</div><div><div class="item-nom" style="color:#a1887f;">Mouse Montaña 🔒</div><div class="item-desc">+1.5K/clic • Espacio</div></div></div><button class="btn" disabled>🔒</button></div>
+<div class="item locked" style="border-left-color:#311b92;"><div class="item-info"><div class="m-icon" style="background:linear-gradient(135deg,#311b92,#512da8)">🖱️</div><div><div class="item-nom" style="color:#7c4dff;">Mouse Galáctico 🔒</div><div class="item-desc">+8K/clic • Montaña</div></div></div><button class="btn" disabled>🔒</button></div>
+<div class="item locked" style="border-left-color:#00acc1;"><div class="item-info"><div class="m-icon" style="background:linear-gradient(135deg,#00acc1,#00838f)">🖱️</div><div><div class="item-nom" style="color:#00f0ff;">Mouse Cuántico 🔒</div><div class="item-desc">+50K/clic • Galaxia</div></div></div><button class="btn" disabled>🔒</button></div>
+<div class="item locked" style="border-left-color:#ff4d6d;"><div class="item-info"><div class="m-icon m-dios">🖱️</div><div><div class="item-nom" style="background:linear-gradient(90deg,#ff4d6d,#ff9800,#ffd300,#38b000,#00d9ff,#7b2cbf,#ff4d6d);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:bold;">🌈 DIOS SUPREMO 🔒</div><div class="item-desc">+2M/clic ✨ • Galaxia</div></div></div><button class="btn" disabled style="background:linear-gradient(90deg,#ff4d6d,#ff9800,#ffd300,#38b000,#00d9ff,#7b2cbf,#ff4d6d);background-size:300% 100%;animation:arcoiris 2.5s linear infinite;color:#000;">🔒</button></div>
+</div></div>
+
+<div id="tab-mundos" class="tab-content"><div class="card"><h2 class="card-tit" style="color:#00d9ff;">🌍 Mundos</h2>
+<div class="item mundo-item" style="border-left-color:#ffd300;"><div><div class="item-nom">⛏️ Mina</div><div class="item-desc">×1.5</div></div><button class="btn" onclick="comprarM(0)">⚡1K</button></div>
+<div class="item mundo-item" style="border-left-color:#38b000;"><div><div class="item-nom">🌲 Bosque</div><div class="item-desc">×2</div></div><button class="btn" onclick="comprarM(1)">⚡10K</button></div>
+<div class="item mundo-item" style="border-left-color:#0099ff;"><div><div class="item-nom">🌊 Océano</div><div class="item-desc">×3</div></div><button class="btn" onclick="comprarM(2)">⚡100K</button></div>
+<div class="item mundo-item" style="border-left-color:#9c27b0;"><div><div class="item-nom">🏙️ Ciudad</div><div class="item-desc">×5</div></div><button class="btn" onclick="comprarM(3)">⚡1M</button></div>
+<div class="item mundo-item" style="border-left-color:#ff9800;"><div><div class="item-nom">🚀 Espacio</div><div class="item-desc">×10</div></div><button class="btn" onclick="comprarM(4)">⚡10M</button></div>
+<div class="item mundo-item" style="border-left-color:#795548;"><div><div class="item-nom">🏔️ Montaña</div><div class="item-desc">×8</div></div><button class="btn" onclick="comprarM(5)">⚡50M</button></div>
+<div class="item mundo-item" style="border-left-color:#311b92;"><div><div class="item-nom">🌌 Galaxia</div><div class="item-desc">×15</div></div><button class="btn" onclick="comprarM(6)">⚡500M</button></div>
+</div></div>
+
+<div id="tab-gens" class="tab-content"><div class="card"><h2 class="card-tit" style="color:#00d9ff;">⚙️ Generadores</h2>
+<div class="item" style="border-left-color:#b87333;"><div class="item-info"><div class="m-icon" style="background:linear-gradient(135deg,#b87333,#8b4513)">🎯</div><div><div class="item-nom">Básico ×<span style="color:var(--oro)" id="gb-c">0</span></div><div class="item-desc">+30/s</div></div></div><button class="btn" onclick="comprarGB()">⚡<span id="gb-p">569</span></button></div>
+<div class="item" style="border-left-color:#cd853f;"><div class="item-info"><div class="m-icon" style="background:linear-gradient(135deg,#cd853f,#a0522d)">🎯</div><div><div class="item-nom">Mejorado ×<span style="color:var(--oro)" id="gm-c">0</span></div><div class="item-desc">+120/s</div></div></div><button class="btn" onclick="comprarGM()">⚡<span id="gm-p">2.5K</span></button></div>
+<div class="item locked" style="border-left-color:#8b4513;"><div class="item-info"><div class="m-icon" style="background:linear-gradient(135deg,#8b4513,#5c2e0a)">🎯</div><div><div class="item-nom">Industrial 🔒</div><div class="item-desc">+500/s • Bosque</div></div></div><button class="btn" disabled>🔒</button></div>
+<div class="item locked" style="border-left-color:#7b2cbf;"><div class="item-info"><div class="m-icon" style="background:linear-gradient(135deg,#7b2cbf,#5c16c5)">⚡</div><div><div class="item-nom">Avanzado 🔒</div><div class="item-desc">+2.5K/s • Océano</div></div></div><button class="btn" disabled>🔒</button></div>
+<div class="item locked" style="border-left-color:#ffd300;"><div class="item-info"><div class="m-icon" style="background:linear-gradient(135deg,#ffd300,#ff9800)">⚡</div><div><div class="item-nom">Épico 🔒</div><div class="item-desc">+12K/s • Ciudad</div></div></div><button class="btn" disabled>🔒</button></div>
+<div class="item locked" style="border-left-color:#ff9800;"><div class="item-info"><div class="m-icon" style="background:linear-gradient(135deg,#ff9800,#e68900)">⚡</div><div><div class="item-nom">Legendario 🔒</div><div class="item-desc">+60K/s • Espacio</div></div></div><button class="btn" disabled>🔒</button></div>
+<div class="item locked" style="border-left-color:#9c27b0;"><div class="item-info"><div class="m-icon" style="background:linear-gradient(135deg,#9c27b0,#7b1fa2)">⚡</div><div><div class="item-nom">Mítico 🔒</div><div class="item-desc">+300K/s • Montaña</div></div></div><button class="btn" disabled>🔒</button></div>
+<div class="item locked" style="border-left-color:#311b92;"><div class="item-info"><div class="m-icon" style="background:linear-gradient(135deg,#311b92,#512da8)">⚡</div><div><div class="item-nom">Divino 🔒</div><div class="item-desc">+1.5M/s • Galaxia</div></div></div><button class="btn" disabled>🔒</button></div>
+</div></div>
+
+<div id="tab-afk" class="tab-content"><div class="card"><h2 class="card-tit" style="color:#ffd300;">⏰ Sistema AFK</h2>
+<div class="info-bar" style="color:var(--blanco);margin-bottom:10px;">⏱️ Base: 6h | Máx: <span id="tMax">6h</span> | 📉 Desc: <span id="descA">0%</span> | ⚡ Vel: ×<span id="velA">1.00</span></div>
+<div class="item" style="border-left-color:#ffd300;"><div class="item-info"><div class="m-icon" style="background:linear-gradient(135deg,#ffd300,#ff9800)">⚡</div><div><div class="item-nom">Velocidad AFK <span class="item-lvl" id="vel-l">Lv.0</span></div><div class="item-desc">+15% producción</div></div></div><button class="btn" onclick="comprarVel()">⚡<span id="vel-p">25K</span></button></div>
+<div class="item" style="border-left-color:#00d9ff;"><div class="item-info"><div class="m-icon" style="background:linear-gradient(135deg,#0099ff,#00d9ff)">⏳</div><div><div class="item-nom">Tiempo AFK <span class="item-lvl" id="ti-l">Lv.0/12</span></div><div class="item-desc">+30min → máx 12h</div></div></div><button class="btn" onclick="comprarTi()">⚡<span id="ti-p">28K</span></button></div>
+<div class="item" style="border-left-color:#38b000;"><div class="item-info"><div class="m-icon" style="background:linear-gradient(135deg,#38b000,#8cc63f)">💰</div><div><div class="item-nom">Descuento Tienda <span class="item-lvl" id="de-l">Lv.0/5</span></div><div class="item-desc">-10% → máx -50%</div></div></div><button class="btn" onclick="comprarDe()">⚡<span id="de-p">22K</span></button></div>
+</div></div>
+
+<div id="tab-logros" class="tab-content"><div class="card"><h2 class="card-tit" style="color:#ffd300;">🏅 Logros</h2><div id="logros"></div></div></div>
+
+<div id="tab-renacer" class="tab-content"><div class="card"><h2 class="card-tit" style="color:#ff6b35;">🔥 Renacer</h2>
+<div class="item" style="border-left-color:#ff6b35;"><div class="item-info"><div class="m-icon" style="background:linear-gradient(135deg,#ff6b35,#ffd300)">🔁</div><div><div class="item-nom">Renacer ×<span id="ren-c">0</span></div><div class="item-desc">×1.5 permanente • Precio ×1.5<br>Reinicia TODO excepto 🌍 MUNDOS<br>Costo: <span id="ren-p">100K</span></div></div></div><button class="btn" style="background:linear-gradient(135deg,#e6b800,#ffd300);color:#000;" onclick="comprarRen()">⚡ Renacer</button></div>
+</div></div>
+
+<script>
+let audioCtx=null;function initAudio(){try{audioCtx||(audioCtx=new (window.AudioContext||window.webkitAudioContext)())}catch(e){}}
+function sonidoClic(){initAudio();if(!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.type='sine';o.frequency.setValueAtTime(680,audioCtx.currentTime);o.frequency.exponentialRampToValueAtTime(420,audioCtx.currentTime+.05);g.gain.setValueAtTime(.15,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+.05);o.start(audioCtx.currentTime);o.stop(audioCtx.currentTime+.05)}
+function sonidoCompra(){initAudio();if(!audioCtx)return;[523,659,784].forEach((f,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(.12,audioCtx.currentTime+i*.08);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+i*.08+.12);o.start(audioCtx.currentTime+i*.08);o.stop(audioCtx.currentTime+i*.08+.12)})}
+function sonidoRenacer(){initAudio();if(!audioCtx)return;[262,330,392,523,659,784].forEach((f,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.15,audioCtx.currentTime+i*.1);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+i*.1+.2);o.start(audioCtx.currentTime+i*.1);o.stop(audioCtx.currentTime+i*.1+.2)})}
+
+let e=0,pc=1,pps=0,tc=0,r=0;
+let mulB=1.0,mulM=1.0,mulR=1.0,mundo=-1;
+const NOMBRES=['Base','⛏️ Mina','🌲 Bosque','🌊 Océano','🏙️ Ciudad','🚀 Espacio','🏔️ Montaña','🌌 Galaxia'];
+const MULTS=[1.0,1.5,2.0,3.0,5.0,10.0,8.0,15.0];
+const PRECIOS=[0,1000,10000,100000,1000000,10000000,50000000,500000000];
+let desbloq=[false,false,false,false,false,false,false];
+let mcL=0,mcP=22,mgL=0,mgP=100,mfL=0,mfP=2250,gbC=0,gbP=569,gmC=0,gmP=2530;
+let velL=0,velP=25000,tiL=0,tiP=28000,deL=0,deP=22000,renP=100000;
+let ultimoT=Date.now(),logrosOk={};
+
+const LOGROS=[
+{id:'c1',n:'👆 Primer Clic',d:'Haz tu primer clic',f:()=>tc>=1},
+{id:'c100',n:'💯 Clicks',d:'Alcanza 100 clics',f:()=>tc>=100},
+{id:'ren1',n:'🔥 Renacido',d:'Haz tu primer renacer',f:()=>r>=1},
+{id:'mundoB',n:'🌲 Explorador',d:'Desbloquea Bosque',f:()=>desbloq[0]},
+{id:'e1M',n:'⚡ Millonario',d:'Acumula 1M de energía',f:()=>e>=1000000},
+{id:'mundoE',n:'🚀 Viaje Espacial',d:'Desbloquea Espacio',f:()=>desbloq[4]},
+{id:'c1000',n:'🎯 Maestro del Clic',d:'Alcanza 1000 clics',f:()=>tc>=1000},
+{id:'ren3',n:'👑 Leyenda',d:'Haz 3 renacimientos',f:()=>r>=3}
+];
+
+function fmtNum(n){n=Math.floor(n);if(n>=1e12)return(n/1e12).toFixed(2)+'T';if(n>=1e9)return(n/1e9).toFixed(2)+'B';if(n>=1e6)return(n/1e6).toFixed(2)+'M';if(n>=1e3)return(n/1e3).toFixed(2)+'K';return n+''}
+function fmtTiempo(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=Math.floor(s%60);return `${h}h ${m}m ${ss}s`}
+function clickear(ev){sonidoClic();const mt=mulB*mulM*mulR;e+=Math.floor(pc*mt);tc++;const r=document.querySelector('.click-btn').getBoundingClientRect();const x=(ev.clientX||(ev.touches&&ev.touches[0].clientX))-r.left;const y=(ev.clientY||(ev.touches&&ev.touches[0].clientY))-r.top;const fl=document.createElement('div');fl.className='flotante';fl.textContent=`+${fmtNum(Math.floor(pc*mt))}`;fl.style.left=x+'px';fl.style.top=y+'px';document.getElementById('cc').appendChild(fl);setTimeout(()=>fl.remove(),1000);actualizar();comprobarLogros()}
+
+function comprarM(i){if(i>0&&!desbloq[i-1])return;if(e>=PRECIOS[i]&&!desbloq[i]){e-=PRECIOS[i];desbloq[i]=true;mundo=i;mulM=MULTS[i];sonidoCompra();actualizar();comprobarLogros()}}
+function comprarMC(){if(e>=mcP){e-=mcP;mcL++;pc+=1;mcP=Math.floor(mcP*1.25);sonidoCompra();actualizar()}}
+function comprarMG(){if(mundo>=0&&e>=mgP){e-=mgP;mgL++;pc+=5;mgP=Math.floor(mgP*1.3);sonidoCompra();actualizar()}}
+function comprarMF(){if(mundo>=1&&e>=mfP){e-=mfP;mfL++;pc+=25;mfP=Math.floor(mfP*1.35);sonidoCompra();actualizar()}}
+function comprarGB(){const d=1-deL*.1;if(e>=Math.floor(gbP*d)){e-=Math.floor(gbP*d);gbC++;pps+=30;gbP=Math.floor(gbP*1.18);sonidoCompra();actualizar()}}
+function comprarGM(){const d=1-deL*.1;if(e>=Math.floor(gmP*d)){e-=Math.floor(gmP*d);gmC++;pps+=120;gmP=Math.floor(gmP*1.2);sonidoCompra();actualizar()}}
+function comprarVel(){if(e>=velP&&velL<10){e-=velP;velL++;velP=Math.floor(velP*1.4);sonidoCompra();actualizar()}}
+function comprarTi(){if(e>=tiP&&tiL<12){e-=tiP;tiL++;tiP=Math.floor(tiP*1.3);sonidoCompra();actualizar()}}
+function comprarDe(){if(e>=deP&&deL<5){e-=deP;deL++;deP=Math.floor(deP*1.5);sonidoCompra();actualizar()}}
+function comprarRen(){if(e>=renP){sonidoRenacer();r++;mulR*=1.5;renP=Math.floor(renP*1.5);e=0;pc=1;pps=0;tc=0;mcL=0;mcP=22;mgL=0;mgP=100;mfL=0;mfP=2250;gbC=0;gbP=569;gmC=0;gmP=2530;velL=0;velP=25000;tiL=0;tiP=28000;deL=0;deP=22000;actualizar();comprobarLogros()}}
+
+function cambiar(id){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));event.target.classList.add('active');document.getElementById('tab-'+id).classList.add('active')}
+function toggleGuia(){const g=document.getElementById('guia-instalar');g.style.display=g.style.display==='block'?'none':'block'}
+
+function actualizar(){
+  const mt=mulB*mulM*mulR*(1+velL*.15);
+  document.getElementById('e').textContent=fmtNum(Math.floor(e));
+  document.getElementById('pps').textContent=fmtNum(Math.floor(pps*mt));
+  document.getElementById('pc').textContent=fmtNum(Math.floor(pc*mulM*mulR));
+  document.getElementById('r').textContent=r;
+  document.getElementById('tc').textContent=fmtNum(tc);
+  document.getElementById('mul').textContent=mulM.toFixed(2);
+  document.getElementById('nm').textContent=NOMBRES[mundo+1];
+  document.getElementById('ren-p').textContent=fmtNum(renP);
+  document.getElementById('ren-c').textContent='×'+r;
+  document.getElementById('gb-c').textContent='×'+gbC;
+  document.getElementById('gm-c').textContent='×'+gmC;
+  document.getElementById('mc-l').textContent='Lv.'+mcL;
+  document.getElementById('mg-l').textContent='Lv.'+mgL;
+  document.getElementById('mf-l').textContent='Lv.'+mfL;
+  document.getElementById('mc-p').textContent=fmtNum(mcP);
+  document.getElementById('mg-p').textContent=fmtNum(mgP);
+  document.getElementById('mf-p').textContent=fmtNum(mfP);
+  document.getElementById('gb-p').textContent=fmtNum(gbP);
+  document.getElementById('gm-p').textContent=fmtNum(gmP);
+  document.getElementById('vel-l').textContent='Lv.'+velL;
+  document.getElementById('ti-l').textContent='Lv.'+tiL+'/12';
+  document.getElementById('de-l').textContent='Lv.'+deL+'/5';
+  document.getElementById('vel-p').textContent=fmtNum(velP);
+  document.getElementById('ti-p').textContent=fmtNum(tiP);
+  document.getElementById('de-p').textContent=fmtNum(deP);
+  document.getElementById('descA').textContent=(deL*10)+'%';
+  document.getElementById('velA').textContent=(1+velL*.15).toFixed(2);
+  const maxS=Math.min(3600*(6+tiL*.5),12*3600);
+  document.getElementById('tMax').textContent=(maxS/3600).toFixed(1)+'h';
+  document.querySelectorAll('.mundo-item').forEach((el,i)=>{
+    el.classList.toggle('active',desbloq[i]&&mundo===i);
+    const b=el.querySelector('button');
+    if(desbloq[i]){b.textContent='✅';b.style.background='#38b000';b.disabled=true}
+    else if(i>0&&!desbloq[i-1]){b.textContent='🔒';b.disabled=true}
+    else{b.textContent='⚡'+fmtNum(PRECIOS[i]);b.disabled=false;b.style.background=''}
+  });
+}
+
+function comprobarLogros(){LOGROS.forEach(l=>{if(!logrosOk[l.id]&&l.f()){logrosOk[l.id]=true;const t=document.getElementById('lt');t.textContent=l.n;t.classList.add('mostrar');setTimeout(()=>t.classList.remove('mostrar'),3000)}});document.getElementById('logros').innerHTML=LOGROS.map(l=>`<div class="logro-item ${logrosOk[l.id]?'ok':''}"><span class="logro-ico">${logrosOk[l.id]?'✅':'🔒'}</span><div><div class="logro-nom">${l.n}</div><div class="logro-desc">${l.d}</div></div></div>`).join('')}
+
+function calcularAFK(){
+  const ahora=Date.now();
+  const maxS=Math.min(3600*(6+tiL*.5),12*3600);
+  const seg=Math.min(Math.max(0,(ahora-ultimoT)/1000),maxS);
+  const mt=mulB*mulM*mulR*(1+velL*.15);
+  if(seg>=5&&pps>0){
+    const ganado=Math.floor(pps*mt*seg);
+    if(ganado>0){e+=ganado;document.getElementById('afkT').textContent=fmtTiempo(seg);document.getElementById('afkG').textContent=fmtNum(ganado);document.getElementById('afkModal').classList.add('mostrar')}
+  }
+  ultimoT=ahora;
+}
+function cerrarAfk(){document.getElementById('afkModal').classList.remove('mostrar')}
+
+function guardar(){try{localStorage.setItem('RC',JSON.stringify({e,pc,pps,tc,r,mulB,mulM,mulR,mundo,desbloq,mcL,mcP,mgL,mgP,mfL,mfP,gbC,gbP,gmC,gmP,velL,velP,tiL,tiP,deL,deP,renP,ultimoT,logrosOk}))}catch(e){}}
+function cargar(){try{const d=JSON.parse(localStorage.getItem('RC')||'null');if(d){e=d.e||0;pc=d.pc||1;pps=d.pps||0;tc=d.tc||0;r=d.r||0;mulB=d.mulB||1.0;mulM=d.mulM||1.0;mulR=d.mulR||1.0;mundo=d.mundo??-1;desbloq=d.desbloq||[false,false,false,false,false,false,false];mcL=d.mcL||0;mcP=d.mcP||22;mgL=d.mgL||0;mgP=d.mgP||100;mfL=d.mfL||0;mfP=d.mfP||2250;gbC=d.gbC||0;gbP=d.gbP||569;gmC=d.gmC||0;gmP=d.gmP||2530;velL=d.velL||0;velP=d.velP||25000;tiL=d.tiL||0;tiP=d.tiP||28000;deL=d.deL||0;deP=d.deP||22000;renP=d.renP||100000;ultimoT=d.ultimoT||Date.now();logrosOk=d.logrosOk||{}}}catch(e){ultimoT=Date.now()}}
+
+setInterval(()=>{if(pps>0)e+=Math.floor(pps*mulB*mulM*mulR*(1+velL*.15));actualizar();guardar()},1000);
+cargar();calcularAFK();actualizar();comprobarLogros();
+</script>
+</body></html>
