@@ -1,0 +1,191 @@
+<!DOCTYPE html><html lang="es"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>⚡ Riven Clicker</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7b2cbf">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script>if('serviceWorker' in navigator)window.addEventListener('load',()=>{navigator.serviceWorker.register('./sw.js').catch(e=>{})})
+</script>
+<style>
+:root{--fondo:#2a0e52;--morado-tarjeta:#3d1a70;--morado-borde:#7b2cbf;--morado-claro:#c77dff;--azul-borde:#00d9ff;--amarillo:#ffd300;--verde:#38b000;--blanco:#fff;--texto-gris:#b8a2d9;--rojo:#ff4d6d;--naranja:#ff9800;--rosa:#ff00c8}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:var(--fondo);min-height:100vh;color:var(--blanco);padding:15px;max-width:480px;margin:0 auto;padding-bottom:30px}
+.btn-instalar{background:transparent;color:var(--morado-claro);border:1px solid rgba(199,125,255,.4);border-radius:8px;padding:6px 12px;font-size:.85rem;cursor:pointer;margin-bottom:15px;transition:.2s;width:100%}
+.btn-instalar:hover{background:rgba(123,44,191,.15)}
+#guia-instalar{display:none;margin-bottom:15px;padding:12px;background:rgba(0,0,0,.5);border-radius:10px;border-left:3px solid var(--morado-claro)}
+.guia-tit{color:var(--amarillo);font-weight:bold;margin:6px 0 3px}
+.guia-texto{color:var(--texto-gris);font-size:.9rem}
+.logro-toast{position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-100px);background:linear-gradient(135deg,#ffd300,#ff9800);color:#000;padding:12px 20px;border-radius:12px;font-weight:bold;z-index:9998;opacity:0;transition:all .5s ease;box-shadow:0 0 20px rgba(255,211,0,.5);max-width:320px;text-align:center}
+.logro-toast.mostrar{transform:translateX(-50%) translateY(0);opacity:1}
+.afk-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s ease}
+.afk-modal.mostrar{opacity:1;pointer-events:auto}
+.afk-card{background:linear-gradient(135deg,#3d1a70,#2a0e52);border:2px solid var(--amarillo);border-radius:20px;padding:25px;max-width:360px;width:100%;text-align:center;box-shadow:0 0 30px rgba(255,211,0,.3);transform:translateY(20px);transition:transform .3s ease}
+.afk-modal.mostrar .afk-card{transform:translateY(0)}
+.afk-titulo{font-size:1.4rem;font-weight:bold;color:var(--amarillo);margin-bottom:15px}
+.afk-dato{font-size:1.1rem;margin:10px 0;color:var(--blanco)}
+.afk-valor{color:var(--verde);font-weight:bold;font-size:1.3rem}
+.afk-btn{background:linear-gradient(135deg,#7b2cbf,#9d4edd);color:#fff;border:none;border-radius:10px;padding:12px 30px;font-size:1rem;font-weight:bold;cursor:pointer;margin-top:15px;transition:.2s}
+.afk-btn:hover{transform:scale(1.05)}
+.click-container{position:relative;display:flex;justify-content:center;margin:20px 0}
+.click-btn{width:220px;height:220px;border-radius:50%;background:linear-gradient(145deg,#4a148c,#311b70);border:4px solid var(--azul-borde);color:#fff;font-size:1.6rem;font-weight:bold;cursor:pointer;box-shadow:0 0 30px rgba(0,217,255,.4),inset 0 -5px 15px rgba(0,0,0,.3);transition:.1s}
+.click-btn:active{transform:scale(.95);box-shadow:0 0 40px rgba(0,217,255,.6)}
+.click-btn span{display:block;font-size:2.5rem;margin-bottom:5px}
+.flotante{position:absolute;color:var(--amarillo);font-weight:bold;font-size:1.2rem;pointer-events:none;animation:subir 1s ease-out forwards;text-shadow:0 0 5px rgba(255,211,0,.8);z-index:2}
+@keyframes subir{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-80px) scale(1.3)}}
+.mouse-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.mouse-comun{background:linear-gradient(135deg,#888,#555)}.mouse-gamer{background:linear-gradient(135deg,#38b000,#2d8f00)}.mouse-futurista{background:linear-gradient(135deg,#0099ff,#0066cc)}.mouse-mitico{background:linear-gradient(135deg,#9c27b0,#7b1fa2)}.mouse-divino{background:linear-gradient(135deg,#ff9800,#e68900)}.mouse-montaña{background:linear-gradient(135deg,#795548,#5d4037)}.mouse-galactico{background:linear-gradient(135deg,#311b92,#512da8)}.mouse-cuantico{background:linear-gradient(135deg,#00acc1,#00838f)}
+.mouse-dios{background:linear-gradient(90deg,#ff4d6d,#ff9800,#ffd300,#38b000,#00d9ff,#7b2cbf,#ff4d6d);background-size:600% 100%;animation:arcoiris 2.5s linear infinite;box-shadow:0 0 15px rgba(255,255,255,.7),inset 0 0 10px rgba(255,255,255,.5)}
+@keyframes arcoiris{0%{background-position:0% 50%}100%{background-position:600% 50%}}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:15px 0}
+.stat-card{background:var(--morado-tarjeta);border:1px solid var(--morado-borde);border-radius:12px;padding:12px 15px}
+.stat-label{font-size:1rem;color:var(--texto-gris)}.stat-value{font-size:1.3rem;font-weight:bold;color:var(--amarillo);margin-top:4px}
+.info-bar{text-align:center;margin:10px 0;color:var(--morado-claro);font-size:.85rem;line-height:1.4}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:15px 0;justify-content:center}
+.tab{background:rgba(61,26,112,.8);color:var(--blanco);border:2px solid transparent;border-radius:10px;padding:9px 12px;font-size:.85rem;cursor:pointer;transition:.2s}
+.tab.active{background:var(--morado-borde);border-color:var(--morado-claro);box-shadow:0 0 10px rgba(123,44,191,.4)}
+.tab-content{display:none}.tab-content.active{display:block}
+.section-card{background:var(--morado-tarjeta);border:2px solid var(--morado-borde);border-radius:16px;padding:14px;margin-top:15px}
+.section-title{font-size:1.1rem;font-weight:bold;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.mejora-item{background:rgba(0,0,0,.3);border-radius:12px;padding:10px;margin-bottom:8px;border-left:4px solid;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.mejora-info{display:flex;align-items:center;gap:10px;flex:1}.mejora-name{font-weight:bold;font-size:.9rem}.mejora-desc{font-size:.78rem;color:var(--texto-gris);margin-top:2px}
+.mejora-level{font-size:.7rem;color:var(--texto-gris);background:rgba(255,255,255,.1);padding:1px 4px;border-radius:4px;margin-left:5px}
+.buy-btn{background:linear-gradient(135deg,#5c16c5,#7b2cbf);color:#fff;border:none;border-radius:8px;padding:7px 10px;font-weight:bold;cursor:pointer;font-size:.8rem;transition:.2s;white-space:nowrap}
+.buy-btn:disabled{opacity:.4;cursor:not-allowed}.locked{opacity:.7}
+.mundo-item{background:rgba(0,0,0,.3);border-radius:12px;padding:10px;margin-bottom:8px;border-left:4px solid;display:flex;justify-content:space-between;align-items:center}
+.mundo-item.active{border-color:var(--amarillo);background:rgba(255,211,0,.15);outline:2px solid var(--amarillo);box-shadow:0 0 8px rgba(255,211,0,.3)}.mundo-name{font-weight:bold;font-size:.95rem}.mundo-desc{font-size:.8rem;color:var(--texto-gris);margin-top:3px}
+.logro-item{display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;margin-bottom:6px;background:rgba(0,0,0,.2)}
+.logro-item.conseguido{border:1px solid var(--amarillo);background:rgba(255,211,0,.1)}.logro-icon{font-size:1.2rem}.logro-nombre{font-weight:bold;font-size:.85rem}.logro-desc{font-size:.75rem;color:var(--texto-gris)}
+
+
+</style>
+</head><body>
+<div class="logro-toast" id="logroToast">🏅 ¡Logro desbloqueado!</div>
+<div id="afkModal" class="afk-modal"><div class="afk-card"><div class="afk-titulo">⏰ ¡Bienvenido de vuelta!</div><div class="afk-dato">Tiempo: <span class="afk-valor" id="afkTiempo">0s</span></div><div class="afk-dato">⚡ Ganado: <span class="afk-valor" id="afkGanado">0</span></div><button class="afk-btn" onclick="cerrarAfk()">✅ ¡Reclamar!</button></div></div>
+<button class="btn-instalar" onclick="toggleGuia()">📖 ¿Cómo instalar la APP?</button>
+<div id="guia-instalar"><p class="guia-tit">📱 Android</p><p class="guia-texto">Chrome → ⋮ → "Instalar aplicación"</p><p class="guia-tit">📱 iPhone</p><p class="guia-texto">Compartir → "Agregar a pantalla de inicio"</p><p class="guia-tit">💻 PC</p><p class="guia-texto">Chrome → ⋮ → "Instalar Riven Clicker"</p></div>
+<div class="click-container" id="clickContainer"><button class="click-btn" id="clickBtn" onclick="clickear(event)"><span>⚡</span>CLICK</button></div>
+<div id="boosterEstado" style="text-align:center;min-height:22px;margin-bottom:6px;color:#ffd300;font-weight:700;"></div><div class="stats-grid"><div class="stat-card"><div class="stat-label">⚡ Energía</div><div class="stat-value" id="energia">0</div></div><div class="stat-card"><div class="stat-label">⚡ /s</div><div class="stat-value" id="pps">0</div></div><div class="stat-card"><div class="stat-label">👆 Por Clic</div><div class="stat-value" id="porclic">1</div></div><div class="stat-card"><div class="stat-label">⭐ Renacimientos</div><div class="stat-value" id="renacimientos">0</div></div></div>
+<div class="info-bar">🌍 Mundo: <span id="nombreMundo">Mina</span> | ×<span id="mult">1.00</span> | 👆 Clics: <span id="totalClics">0</span></div>
+<div class="tabs"><button class="tab active" onclick="cambiarTab('click')">🖱️ Click</button><button class="tab" onclick="cambiarTab('mundos')">🌍 Mundos</button><button class="tab" onclick="cambiarTab('generadores')">⚙️ Generadores</button><button class="tab" onclick="cambiarTab('afk')">⏰ AFK</button><button class="tab" onclick="cambiarTab('mejoras')">🚀 Mejoras</button><button class="tab" onclick="cambiarTab('logros')">🏅 Logros</button><button class="tab" onclick="cambiarTab('renacer')">🔥 Renacer</button></div>
+
+<div id="tab-click" class="tab-content active"><div class="section-card"><h2 class="section-title" style="color:#00d9ff;">🖱️ Mejoras de Click</h2>
+<div class="mejora-item" style="border-left-color:#888;"><div class="mejora-info"><div class="mouse-icon mouse-comun">🖱️</div><div><div class="mejora-name">Mouse Común <span class="mejora-level" id="mc-lvl">Lv.0</span></div><div class="mejora-desc">+1/clic</div></div></div><button class="buy-btn" onclick="comprarMouseComun()">⚡<span id="mc-precio">22</span></button></div>
+<div class="mejora-item" style="border-left-color:#38b000;"><div class="mejora-info"><div class="mouse-icon mouse-gamer">🖱️</div><div><div class="mejora-name" style="color:#38b000;">Mouse Gamer <span class="mejora-level" id="mg-lvl">Lv.0</span></div><div class="mejora-desc">+5/clic • Mina</div></div></div><button class="buy-btn" onclick="comprarMouseGamer()">⚡<span id="mg-precio">100</span></button></div>
+<div class="mejora-item" style="border-left-color:#0099ff;"><div class="mejora-info"><div class="mouse-icon mouse-futurista">🖱️</div><div><div class="mejora-name" style="color:#0099ff;">Mouse Futurista <span class="mejora-level" id="mf-lvl">Lv.0</span></div><div class="mejora-desc">+25/clic • Bosque</div></div></div><button class="buy-btn" onclick="comprarMouseFuturista()">⚡<span id="mf-precio">2.5K</span></button></div>
+<div class="mejora-item locked" style="border-left-color:#9c27b0;"><div class="mejora-info"><div class="mouse-icon mouse-mitico">🖱️</div><div><div class="mejora-name" style="color:#c77dff;">Mouse Mítico 🔒</div><div class="mejora-desc">+120/clic • Océano</div></div></div><button class="buy-btn" disabled>🔒</button></div>
+<div class="mejora-item locked" style="border-left-color:#ff9800;"><div class="mejora-info"><div class="mouse-icon mouse-divino">🖱️</div><div><div class="mejora-name" style="color:#ffd300;">Mouse Divino 🔒</div><div class="mejora-desc">+600/clic • Ciudad</div></div></div><button class="buy-btn" disabled>🔒</button></div>
+<div class="mejora-item locked" style="border-left-color:#795548;"><div class="mejora-info"><div class="mouse-icon mouse-montaña">🖱️</div><div><div class="mejora-name" style="color:#a1887f;">Mouse Montaña 🔒</div><div class="mejora-desc">+1.5K/clic • Espacio</div></div></div><button class="buy-btn" disabled>🔒</button></div>
+<div class="mejora-item locked" style="border-left-color:#311b92;"><div class="mejora-info"><div class="mouse-icon mouse-galactico">🖱️</div><div><div class="mejora-name" style="color:#7c4dff;">Mouse Galáctico 🔒</div><div class="mejora-desc">+8K/clic • Montaña</div></div></div><button class="buy-btn" disabled>🔒</button></div>
+<div class="mejora-item locked" style="border-left-color:#00acc1;"><div class="mejora-info"><div class="mouse-icon mouse-cuantico">🖱️</div><div><div class="mejora-name" style="color:#00f0ff;">Mouse Cuántico 🔒</div><div class="mejora-desc">+50K/clic • Galaxia</div></div></div><button class="buy-btn" disabled>🔒</button></div>
+<div class="mejora-item locked" style="border-left-color:#ff4d6d;"><div class="mejora-info"><div class="mouse-icon mouse-dios">🖱️</div><div><div class="mejora-name" style="background:linear-gradient(90deg,#ff4d6d,#ff9800,#ffd300,#38b000,#00d9ff,#7b2cbf,#ff4d6d);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:bold;">🌈 DIOS SUPREMO 🔒</div><div class="mejora-desc">+2M/clic ✨ • Galaxia</div></div></div><button class="buy-btn" disabled style="background:linear-gradient(90deg,#ff4d6d,#ff9800,#ffd300,#38b000,#00d9ff,#7b2cbf,#ff4d6d);background-size:300% 100%;animation:arcoiris 2.5s linear infinite;color:#000;font-weight:bold;">🔒</button></div>
+</div></div>
+
+<div id="tab-mundos" class="tab-content"><div class="section-card"><h2 class="section-title" style="color:#00d9ff;">🌍 Mundos — PERMANENTES</h2>
+<div class="mundo-item active" style="border-left-color:#ffd300;"><div><div class="mundo-name">⛏️ Mina</div><div class="mundo-desc">×1.5 ✅</div></div><button class="buy-btn" style="background:#38b000;">✅</button></div>
+<div class="mundo-item" style="border-left-color:#38b000;"><div><div class="mundo-name">🌲 Bosque</div><div class="mundo-desc">×2 🔒</div></div><button class="buy-btn" onclick="comprarBosque()">⚡5K</button></div>
+<div class="mundo-item" style="border-left-color:#0099ff;"><div><div class="mundo-name">🌊 Océano</div><div class="mundo-desc">×3 🔒</div></div><button class="buy-btn" onclick="comprarOceano()">⚡50K</button></div>
+<div class="mundo-item" style="border-left-color:#9c27b0;"><div><div class="mundo-name">🏙️ Ciudad</div><div class="mundo-desc">×5 🔒</div></div><button class="buy-btn" onclick="comprarCiudad()">⚡500K</button></div>
+<div class="mundo-item" style="border-left-color:#ff9800;"><div><div class="mundo-name">🚀 Espacio</div><div class="mundo-desc">×10 🔒</div></div><button class="buy-btn" onclick="comprarEspacio()">⚡5M</button></div>
+<div class="mundo-item" style="border-left-color:#795548;"><div><div class="mundo-name">🏔️ Montaña</div><div class="mundo-desc">×8 🔒</div></div><button class="buy-btn" onclick="comprarMontaña()">⚡25M</button></div>
+<div class="mundo-item" style="border-left-color:#311b92;"><div><div class="mundo-name">🌌 Galaxia</div><div class="mundo-desc">×15 🔒</div></div><button class="buy-btn" onclick="comprarGalaxia()">⚡250M</button></div>
+</div></div>
+
+<div id="tab-generadores" class="tab-content"><div class="section-card"><h2 class="section-title" style="color:#00d9ff;">⚙️ Generadores</h2>
+<div class="mejora-item" style="border-left-color:#b87333;"><div class="mejora-info"><div class="mouse-icon" style="background:linear-gradient(135deg,#b87333,#8b4513);">🎯</div><div><div class="mejora-name">Básico ×<span style="color:var(--amarillo)" id="gb-cnt">0</span></div><div class="mejora-desc">+30/s</div></div></div><button class="buy-btn" onclick="comprarGBasico()">⚡<span id="gb-precio">569</span></button></div>
+<div class="mejora-item" style="border-left-color:#cd853f;"><div class="mejora-info"><div class="mouse-icon" style="background:linear-gradient(135deg,#cd853f,#a0522d);">🎯</div><div><div class="mejora-name">Mejorado ×<span style="color:var(--amarillo)" id="gm-cnt">0</span></div><div class="mejora-desc">+120/s</div></div></div><button class="buy-btn" onclick="comprarGMejorado()">⚡<span id="gm-precio">2.5K</span></button></div>
+<div class="mejora-item locked" style="border-left-color:#8b4513;"><div class="mejora-info"><div class="mouse-icon" style="background:linear-gradient(135deg,#8b4513,#5c2e0a);">🎯</div><div><div class="mejora-name">Industrial 🔒</div><div class="mejora-desc">+500/s • Bosque</div></div></div><button class="buy-btn" disabled>🔒</button></div>
+<div class="mejora-item locked" style="border-left-color:#7b2cbf;"><div class="mejora-info"><div class="mouse-icon" style="background:linear-gradient(135deg,#7b2cbf,#5c16c5);">⚡</div><div><div class="mejora-name">Avanzado 🔒</div><div class="mejora-desc">+2.5K/s • Océano</div></div></div><button class="buy-btn" disabled>🔒</button></div>
+<div class="mejora-item locked" style="border-left-color:#ffd300;"><div class="mejora-info"><div class="mouse-icon" style="background:linear-gradient(135deg,#ffd300,#ff9800);">⚡</div><div><div class="mejora-name">Épico 🔒</div><div class="mejora-desc">+12K/s • Ciudad</div></div></div><button class="buy-btn" disabled>🔒</button></div>
+<div class="mejora-item locked" style="border-left-color:#ff9800;"><div class="mejora-info"><div class="mouse-icon" style="background:linear-gradient(135deg,#ff9800,#e68900);">⚡</div><div><div class="mejora-name">Legendario 🔒</div><div class="mejora-desc">+60K/s • Espacio</div></div></div><button class="buy-btn" disabled>🔒</button></div>
+<div class="mejora-item locked" style="border-left-color:#9c27b0;"><div class="mejora-info"><div class="mouse-icon" style="background:linear-gradient(135deg,#9c27b0,#7b1fa2);">⚡</div><div><div class="mejora-name">Mítico 🔒</div><div class="mejora-desc">+300K/s • Montaña</div></div></div><button class="buy-btn" disabled>🔒</button></div>
+<div class="mejora-item locked" style="border-left-color:#311b92;"><div class="mejora-info"><div class="mouse-icon" style="background:linear-gradient(135deg,#311b92,#512da8);">⚡</div><div><div class="mejora-name">Divino 🔒</div><div class="mejora-desc">+1.5M/s • Galaxia</div></div></div><button class="buy-btn" disabled>🔒</button></div>
+</div></div>
+
+<div id="tab-afk" class="tab-content"><div class="section-card"><h2 class="section-title" style="color:#ffd300;">⏰ Sistema AFK</h2>
+<div class="info-bar" style="color:var(--blanco);margin-bottom:12px;">⏱️ Máx: <span id="tiempoMaxAfk">6h</span> | 📉 Desc: <span id="descuentoActual">0%</span> | ⚡ Vel: ×<span id="velocidadAfk">1.00</span></div>
+<div class="mejora-item" style="border-left-color:#ffd300;"><div class="mejora-info"><div class="mouse-icon" style="background:linear-gradient(135deg,#ffd300,#ff9800);">⚡</div><div><div class="mejora-name">Velocidad AFK <span class="mejora-level" id="velNivel">Lv.0</span></div><div class="mejora-desc">+15% producción</div></div></div><button class="buy-btn" onclick="comprarVelocidad()">⚡<span id="velPrecio">25K</span></button></div>
+<div class="mejora-item" style="border-left-color:#00d9ff;"><div class="mejora-info"><div class="mouse-icon" style="background:linear-gradient(135deg,#0099ff,#00d9ff);">⏳</div><div><div class="mejora-name">Tiempo AFK <span class="mejora-level" id="tiempoNivel">Lv.0/12</span></div><div class="mejora-desc">+30min → máx 12h</div></div></div><button class="buy-btn" onclick="comprarTiempo()">⚡<span id="tiempoPrecio">28K</span></button></div>
+<div class="mejora-item" style="border-left-color:#38b000;"><div class="mejora-info"><div class="mouse-icon" style="background:linear-gradient(135deg,#38b000,#8cc63f);">💰</div><div><div class="mejora-name">Descuento Tienda <span class="mejora-level" id="descNivel">Lv.0/5</span></div><div class="mejora-desc">-10% → máx -50%</div></div></div><button class="buy-btn" onclick="comprarDescuento()">⚡<span id="descPrecio">22K</span></button></div>
+</div></div>
+
+<div id="tab-mejoras" class="tab-content"><div class="section-card"><h2 class="section-title" style="color:#c77dff;">🚀 Mejoras</h2><div class="upgrade-note">Mejoras globales: no aumentan directamente el nivel de tus mouses.</div>
+<div class="mejora-item" style="border-left-color:#ffd300;"><div class="mejora-info"><div class="mouse-icon" style="background:linear-gradient(135deg,#ffd300,#ff9800);">💥</div><div><div class="mejora-name">Potencia Crítica <span class="mejora-level" id="imp-crit-lvl">Lv.0</span></div><div class="mejora-desc">+1% probabilidad de crítico <span class="upgrade-badge" id="imp-crit-chance">5%</span></div></div></div><button class="buy-btn" onclick="comprarImpCritica()">⚡<span id="imp-crit-price">15K</span></button></div>
+<div class="mejora-item" style="border-left-color:#00d9ff;"><div class="mejora-info"><div class="mouse-icon" style="background:linear-gradient(135deg,#0099ff,#00d9ff);">⚡</div><div><div class="mejora-name">Núcleo Energético <span class="mejora-level" id="imp-core-lvl">Lv.0</span></div><div class="mejora-desc">+10% energía por clic</div></div></div><button class="buy-btn" onclick="comprarImpCore()">⚡<span id="imp-core-price">20K</span></button></div>
+<div class="mejora-item" style="border-left-color:#38b000;"><div class="mejora-info"><div class="mouse-icon" style="background:linear-gradient(135deg,#38b000,#8cc63f);">⚙️</div><div><div class="mejora-name">Eficiencia de Generadores <span class="mejora-level" id="imp-gen-lvl">Lv.0</span></div><div class="mejora-desc">+5% producción automática</div></div></div><button class="buy-btn" onclick="comprarImpGen()">⚡<span id="imp-gen-price">25K</span></button></div>
+<div class="mejora-item" style="border-left-color:#9c27b0;"><div class="mejora-info"><div class="mouse-icon" style="background:linear-gradient(135deg,#7b2cbf,#c77dff);">🌍</div><div><div class="mejora-name">Resonancia Mundial <span class="mejora-level" id="imp-world-lvl">Lv.0</span></div><div class="mejora-desc">+5% multiplicador de mundo</div></div></div><button class="buy-btn" onclick="comprarImpWorld()">⚡<span id="imp-world-price">50K</span></button></div>
+<div class="mejora-item" style="border-left-color:#ff4d6d;"><div class="mejora-info"><div class="mouse-icon" style="background:linear-gradient(135deg,#ff4d6d,#ff9800);">🔥</div><div><div class="mejora-name">Sobrecarga <span class="mejora-level" id="imp-over-lvl">Lv.0</span></div><div class="mejora-desc">+3% a clic y producción global</div></div></div><button class="buy-btn" onclick="comprarImpOver()">⚡<span id="imp-over-price">100K</span></button></div>
+<div class="info-bar" style="margin-top:10px;color:var(--texto-gris);">💥 Crítico: <span class="crit-text" id="crit-summary">5% ×2</span></div>
+</div></div>
+
+
+<div id="tab-logros" class="tab-content"><div class="section-card"><h2 class="section-title" style="color:#ffd300;">🏅 Logros</h2><div id="listaLogros"></div></div></div>
+
+<div id="tab-renacer" class="tab-content"><div class="section-card"><h2 class="section-title" style="color:#ff6b35;">🔥 Renacer</h2>
+<div class="mejora-item" style="border-left-color:#ff6b35;"><div class="mejora-info"><div class="mouse-icon" style="background:linear-gradient(135deg,#ff6b35,#ffd300);">🔁</div><div><div class="mejora-name">Renacer ×<span id="ren-cnt">0</span></div><div class="mejora-desc">×1.5 permanente • Precio ×1.5<br>Reinicia TODO excepto 🌍 MUNDOS<br>Costo: <span id="ren-precio">100K</span></div></div></div><button class="buy-btn" style="background:linear-gradient(135deg,#e6b800,#ffd300);color:#000;" onclick="comprarRenacer()">⚡ Renacer</button></div>
+</div></div>
+
+<script>
+let audioCtx=null;function initAudio(){if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)()}
+function sonidoClic(){initAudio();if(!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.type='sine';o.frequency.setValueAtTime(680,audioCtx.currentTime);o.frequency.exponentialRampToValueAtTime(420,audioCtx.currentTime+.05);g.gain.setValueAtTime(.15,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+.05);o.start(audioCtx.currentTime);o.stop(audioCtx.currentTime+.05)}
+function sonidoCompra(){initAudio();if(!audioCtx)return;[523,659,784].forEach((f,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(.12,audioCtx.currentTime+i*.08);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+i*.08+.12);o.start(audioCtx.currentTime+i*.08);o.stop(audioCtx.currentTime+i*.08+.12)})}
+function sonidoRenacer(){initAudio();if(!audioCtx)return;[262,330,392,523,659,784].forEach((f,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.15,audioCtx.currentTime+i*.1);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+i*.1+.2);o.start(audioCtx.currentTime+i*.1);o.stop(audioCtx.currentTime+i*.1+.2)})}
+let energia=0,porClic=1,pps=0,totalClics=0,renacimientos=0,mult=1.00,mundoActual=0;
+const NOMBRES_MUNDOS=['Mina','Bosque','Océano','Ciudad','Espacio','Montaña','Galaxia'];
+const MULT_MUNDOS=[1.5,2,3,5,10,8,15];const PRECIOS_MUNDOS=[0,5000,50000,500000,5000000,25000000,250000000];
+let mcLvl=0,mcPrecio=22,mgLvl=0,mgPrecio=100,mfLvl=0,mfPrecio=2250,gbCant=0,gbPrecio=569,gmCant=0,gmPrecio=2530;
+let velNivel=0,velPrecio=25000,tiempoNivel=0,tiempoPrecio=28000,descNivel=0,descPrecio=22000,renPrecio=100000;
+let impCritLvl=0,impCritPrice=15000,impCoreLvl=0,impCorePrice=20000,impGenLvl=0,impGenPrice=25000,impWorldLvl=0,impWorldPrice=50000,impOverLvl=0,impOverPrice=100000;
+let critProb=0.05,critMult=2;
+function multiplicadorEfectivo(){return mult*(1+impWorldLvl*.05)}
+let ultimoTiempo=Date.now(),logrosConseguidos={};
+const LOGROS=[
+{id:'primer_clic',nombre:'👆 Primer Clic',desc:'Haz tu primer clic',check:()=>totalClics>=1},
+{id:'clics_100',nombre:'💯 Clicks',desc:'Alcanza 100 clics',check:()=>totalClics>=100},
+{id:'primer_renacer',nombre:'🔥 Renacido',desc:'Haz tu primer renacer',check:()=>renacimientos>=1},
+{id:'mundo_bosque',nombre:'🌲 Explorador',desc:'Desbloquea Bosque',check:()=>mundoActual>=1},
+{id:'energia_1m',nombre:'⚡ Millonario',desc:'Acumula 1M de energía',check:()=>energia>=1000000},
+{id:'mundo_espacio',nombre:'🚀 Viaje Espacial',desc:'Desbloquea Espacio',check:()=>mundoActual>=4},
+{id:'clics_1000',nombre:'🎯 Maestro del Clic',desc:'Alcanza 1000 clics',check:()=>totalClics>=1000},
+{id:'renacer_3',nombre:'👑 Leyenda',desc:'Haz 3 renacimientos',check:()=>renacimientos>=3}
+];
+function clickear(e){sonidoClic();let boosterClick=Date.now()<turboClickHasta?2:1;let base=porClic*multiplicadorEfectivo()*(1+impCoreLvl*.10+impOverLvl*.03)*boosterClick;let crit=Math.random()<critProb;let ganado=Math.floor(base*(crit?critMult:1));energia+=ganado;totalClics++;const r=document.getElementById('clickBtn').getBoundingClientRect();const x=(e.clientX||e.touches?.[0]?.clientX)-r.left,y=(e.clientY||e.touches?.[0]?.clientY)-r.top;crearFlotante(x,y,`${crit?'💥 CRÍTICO! ':''}+${formatearNumero(ganado)}`);actualizarUI();comprobarLogros()}
+function crearFlotante(x,y,t){const c=document.getElementById('clickContainer'),f=document.createElement('div');f.className='flotante';f.textContent=t;f.style.left=x+'px';f.style.top=y+'px';c.appendChild(f);setTimeout(()=>f.remove(),1000)}
+function comprarMouseComun(){if(energia>=mcPrecio){energia-=mcPrecio;mcLvl++;porClic+=1;mcPrecio=Math.floor(mcPrecio*1.25);sonidoCompra();actualizarUI()}}
+function comprarMouseGamer(){if(mundoActual>=0&&energia>=mgPrecio){energia-=mgPrecio;mgLvl++;porClic+=5;mgPrecio=Math.floor(mgPrecio*1.3);sonidoCompra();actualizarUI()}}
+function comprarMouseFuturista(){if(mundoActual>=1&&energia>=mfPrecio){energia-=mfPrecio;mfLvl++;porClic+=25;mfPrecio=Math.floor(mfPrecio*1.35);sonidoCompra();actualizarUI()}}
+function comprarGBasico(){const d=1-descNivel*.1;if(energia>=Math.floor(gbPrecio*d)){energia-=Math.floor(gbPrecio*d);gbCant++;pps+=30;gbPrecio=Math.floor(gbPrecio*1.18);sonidoCompra();actualizarUI()}}
+function comprarGMejorado(){const d=1-descNivel*.1;if(energia>=Math.floor(gmPrecio*d)){energia-=Math.floor(gmPrecio*d);gmCant++;pps+=120;gmPrecio=Math.floor(gmPrecio*1.2);sonidoCompra();actualizarUI()}}
+function comprarVelocidad(){if(energia>=velPrecio&&velNivel<10){energia-=velPrecio;velNivel++;velPrecio=Math.floor(velPrecio*1.4);sonidoCompra();actualizarUI()}}
+function comprarTiempo(){if(energia>=tiempoPrecio&&tiempoNivel<12){energia-=tiempoPrecio;tiempoNivel++;tiempoPrecio=Math.floor(tiempoPrecio*1.3);sonidoCompra();actualizarUI()}}
+function comprarDescuento(){if(energia>=descPrecio&&descNivel<5){energia-=descPrecio;descNivel++;descPrecio=Math.floor(descPrecio*1.5);sonidoCompra();actualizarUI()}}
+function comprarBosque(){if(energia>=5000&&mundoActual===0){energia-=5000;mundoActual=1;sonidoCompra();actualizarUI();comprobarLogros()}}
+function comprarOceano(){if(energia>=50000&&mundoActual===1){energia-=50000;mundoActual=2;sonidoCompra();actualizarUI()}}
+function comprarCiudad(){if(energia>=500000&&mundoActual===2){energia-=500000;mundoActual=3;sonidoCompra();actualizarUI()}}
+function comprarEspacio(){if(energia>=5000000&&mundoActual===3){energia-=5000000;mundoActual=4;sonidoCompra();actualizarUI()}}
+function comprarMontaña(){if(energia>=25000000&&mundoActual===4){energia-=25000000;mundoActual=5;sonidoCompra();actualizarUI()}}
+function comprarGalaxia(){if(energia>=250000000&&mundoActual===5){energia-=25000000;mundoActual=6;sonidoCompra();actualizarUI()}}
+function comprarRenacer(){if(energia>=renPrecio){sonidoRenacer();renacimientos++;mult*=1.5;renPrecio=Math.floor(renPrecio*1.5);energia=0;porClic=1;pps=0;totalClics=0;mcLvl=0;mcPrecio=22;mgLvl=0;mgPrecio=100;mfLvl=0;mfPrecio=2250;gbCant=0;gbPrecio=569;gmCant=0;gmPrecio=2530;velNivel=0;velPrecio=25000;tiempoNivel=0;tiempoPrecio=28000;descNivel=0;descPrecio=22000;actualizarUI();comprobarLogros()}}
+function formatearNumero(n){if(n>=1e12)return(n/1e12).toFixed(2)+'T';if(n>=1e9)return(n/1e9).toFixed(2)+'B';if(n>=1e6)return(n/1e6).toFixed(2)+'M';if(n>=1e3)return(n/1e3).toFixed(2)+'K';return Math.floor(n).toString()}
+function cambiarTab(id){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));event.target.classList.add('active');document.getElementById('tab-'+id).classList.add('active')}
+function toggleGuia(){const g=document.getElementById('guia-instalar');g.style.display=g.style.display==='block'?'none':'block'}
+function actualizarUI(){
+const turboRest=Math.max(0,turboClickHasta-Date.now()),goldRest=Math.max(0,generadorDoradoHasta-Date.now());
+let estado=document.getElementById('boosterEstado');
+if(estado) estado.textContent=(turboRest||goldRest)?`🚀 Boosters activos: ${turboRest?'Turbo Click ×2 '+Math.ceil(turboRest/1000)+'s ':''}${goldRest?'Generador Dorado ×2 '+Math.ceil(goldRest/1000)+'s':''}`:'';
+document.getElementById('energia').textContent=formatearNumero(Math.floor(energia));document.getElementById('pps').textContent=formatearNumero(Math.floor(pps*multiplicadorEfectivo()*(1+velNivel*.15)*(1+impGenLvl*.05+impOverLvl*.03)));document.getElementById('porclic').textContent=formatearNumero(Math.floor(porClic*multiplicadorEfectivo()*(1+impCoreLvl*.10+impOverLvl*.03)));document.getElementById('renacimientos').textContent=renacimientos;document.getElementById('totalClics').textContent=formatearNumero(totalClics);document.getElementById('mult').textContent=mult.toFixed(2);document.getElementById('nombreMundo').textContent=NOMBRES_MUNDOS[mundoActual];document.getElementById('ren-precio').textContent=formatearNumero(renPrecio);document.getElementById('ren-cnt').textContent='×'+renacimientos;document.getElementById('gb-cnt').textContent='×'+gbCant;document.getElementById('gm-cnt').textContent='×'+gmCant;document.getElementById('mc-lvl').textContent='Lv.'+mcLvl;document.getElementById('mg-lvl').textContent='Lv.'+mgLvl;document.getElementById('mf-lvl').textContent='Lv.'+mfLvl;document.getElementById('mc-precio').textContent=formatearNumero(mcPrecio);document.getElementById('mg-precio').textContent=formatearNumero(mgPrecio);document.getElementById('mf-precio').textContent=formatearNumero(mfPrecio);document.getElementById('gb-precio').textContent=formatearNumero(gbPrecio);document.getElementById('gm-precio').textContent=formatearNumero(gmPrecio);document.getElementById('velNivel').textContent='Lv.'+velNivel;document.getElementById('tiempoNivel').textContent='Lv.'+tiempoNivel+'/12';document.getElementById('descNivel').textContent='Lv.'+descNivel+'/5';document.getElementById('velPrecio').textContent=formatearNumero(velPrecio);document.getElementById('tiempoPrecio').textContent=formatearNumero(tiempoPrecio);document.getElementById('descPrecio').textContent=formatearNumero(descPrecio);document.getElementById('imp-crit-lvl').textContent='Lv.'+impCritLvl;document.getElementById('imp-crit-chance').textContent=Math.round(critProb*100)+'%';document.getElementById('imp-crit-price').textContent=formatearNumero(impCritPrice);document.getElementById('imp-core-lvl').textContent='Lv.'+impCoreLvl;document.getElementById('imp-core-price').textContent=formatearNumero(impCorePrice);document.getElementById('imp-gen-lvl').textContent='Lv.'+impGenLvl;document.getElementById('imp-gen-price').textContent=formatearNumero(impGenPrice);document.getElementById('imp-world-lvl').textContent='Lv.'+impWorldLvl;document.getElementById('imp-world-price').textContent=formatearNumero(impWorldPrice);document.getElementById('imp-over-lvl').textContent='Lv.'+impOverLvl;document.getElementById('imp-over-price').textContent=formatearNumero(impOverPrice);document.getElementById('crit-summary').textContent=Math.round(critProb*100)+'% ×'+critMult;document.getElementById('descuentoActual').textContent=(descNivel*10)+'%';document.getElementById('velocidadAfk').textContent=(1+velNivel*.15).toFixed(2)}
+function comprobarLogros(){LOGROS.forEach(l=>{if(!logrosConseguidos[l.id]&&l.check()){logrosConseguidos[l.id]=true;mostrarLogro(l.nombre)}});renderizarLogros()}
+function mostrarLogro(n){const t=document.getElementById('logroToast');t.textContent=n;t.classList.add('mostrar');setTimeout(()=>t.classList.remove('mostrar'),3000)}
+function renderizarLogros(){document.getElementById('listaLogros').innerHTML=LOGROS.map(l=>`<div class="logro-item ${logrosConseguidos[l.id]?'conseguido':''}"><span class="logro-icon">${logrosConseguidos[l.id]?'✅':'🔒'}</span><div><div class="logro-nombre">${l.nombre}</div><div class="logro-desc">${l.desc}</div></div></div>`).join('')}
+function calcularAFK(){const a=Date.now(),s=Math.min((a-ultimoTiempo)/1000,3600*(6+tiempoNivel*.5));if(s>5){const g=Math.floor(pps*mult*(1+velNivel*.15)*s);if(g>0){energia+=g;document.getElementById('afkGanado').textContent=formatearNumero(g);document.getElementById('afkTiempo').textContent=s<60?Math.floor(s)+'s':s<3600?Math.floor(s/60)+'m':(s/3600).toFixed(1)+'h';document.getElementById('afkModal').classList.add('mostrar')}}ultimoTiempo=a}
+function cerrarAfk(){document.getElementById('afkModal').classList.remove('mostrar')}
+function comprarImpCritica(){if(energia>=impCritPrice&&impCritLvl<20){energia-=impCritPrice;impCritLvl++;critProb=Math.min(.25,.05+impCritLvl*.01);impCritPrice=Math.floor(impCritPrice*1.55);sonidoCompra();actualizarUI()}}
+function comprarImpCore(){if(energia>=impCorePrice&&impCoreLvl<20){energia-=impCorePrice;impCoreLvl++;impCorePrice=Math.floor(impCorePrice*1.5);sonidoCompra();actualizarUI()}}
+function comprarImpGen(){if(energia>=impGenPrice&&impGenLvl<20){energia-=impGenPrice;impGenLvl++;impGenPrice=Math.floor(impGenPrice*1.5);sonidoCompra();actualizarUI()}}
+function comprarImpWorld(){if(energia>=impWorldPrice&&impWorldLvl<20){energia-=impWorldPrice;impWorldLvl++;impWorldPrice=Math.floor(impWorldPrice*1.6);sonidoCompra();actualizarUI()}}
+function comprarImpOver(){if(energia>=impOverPrice&&impOverLvl<15){energia-=impOverPrice;impOverLvl++;impOverPrice=Math.floor(impOverPrice*1.65);sonidoCompra();actualizarUI()}}
+function guardar(){localStorage.setItem('rivenClicker',JSON.stringify({energia,porClic,pps,totalClics,renacimientos,mult,mundoActual,mcLvl,mcPrecio,mgLvl,mgPrecio,mfLvl,mfPrecio,gbCant,gbPrecio,gmCant,gmPrecio,velNivel,velPrecio,tiempoNivel,tiempoPrecio,descNivel,descPrecio,renPrecio,turboClickHasta,generadorDoradoHasta,impCritLvl,impCritPrice,impCoreLvl,impCorePrice,impGenLvl,impGenPrice,impWorldLvl,impWorldPrice,impOverLvl,impOverPrice,ultimoTiempo,logrosConseguidos}))}
+function cargar(){const d=JSON.parse(localStorage.getItem('rivenClicker')||'null');if(d){energia=d.energia||0;porClic=d.porClic||1;pps=d.pps||0;totalClics=d.totalClics||0;renacimientos=d.renacimientos||0;mult=d.mult||1.5;mundoActual=d.mundoActual||0;mcLvl=d.mcLvl||0;mcPrecio=d.mcPrecio||22;mgLvl=d.mgLvl||0;mgPrecio=d.mgPrecio||100;mfLvl=d.mfLvl||0;mfPrecio=d.mfPrecio||2250;gbCant=d.gbCant||0;gbPrecio=d.gbPrecio||569;gmCant=d.gmCant||0;gmPrecio=d.gmPrecio||2530;velNivel=d.velNivel||0;velPrecio=d.velPrecio||25000;tiempoNivel=d.tiempoNivel||0;tiempoPrecio=d.tiempoPrecio||28000;descNivel=d.descNivel||0;descPrecio=d.descPrecio||22000;renPrecio=d.renPrecio||100000;turboClickHasta=d.turboClickHasta||0;generadorDoradoHasta=d.generadorDoradoHasta||0;impCritLvl=d.impCritLvl||0;impCritPrice=d.impCritPrice||15000;impCoreLvl=d.impCoreLvl||0;impCorePrice=d.impCorePrice||20000;impGenLvl=d.impGenLvl||0;impGenPrice=d.impGenPrice||25000;impWorldLvl=d.impWorldLvl||0;impWorldPrice=d.impWorldPrice||50000;impOverLvl=d.impOverLvl||0;impOverPrice=d.impOverPrice||100000;critProb=Math.min(.25,.05+impCritLvl*.01);ultimoTiempo=d.ultimoTiempo||Date.now();logrosConseguidos=d.logrosConseguidos||{}}}
+setInterval(()=>{let boosterGen=Date.now()<generadorDoradoHasta?2:1;pps>0&&(energia+=Math.floor(pps*mult*(1+velNivel*.15)*boosterGen)),actualizarUI(),guardar()},1000);
+cargar();calcularAFK();actualizarUI();renderizarLogros();
+</script>
+</body></html>
